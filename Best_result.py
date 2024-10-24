@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import streamlit as st
 
 
 # Function to create the square's vertices
@@ -52,7 +51,7 @@ def round_to_perfect_square(n):
 
 # List of (scaling_factor, rotation_degree) pairs
 transforms = [
-    (1.0,0), (1.04, 2), (1.06, 3), (1.08, 4), (1.1, 5),
+    (1.0, 0), (1.04, 2), (1.06, 3), (1.08, 4), (1.1, 5),
     (1.11, 6), (1.14, 7), (1.16, 8), (1.17, 9), (1.18, 10),
     (1.197, 11), (1.225, 12), (1.235, 13), (1.245, 14), (1.258, 15),
     (1.27, 16), (1.28, 17), (1.29, 18), (1.3, 19), (1.31, 20),
@@ -60,21 +59,7 @@ transforms = [
     (1.37, 26), (1.38, 27), (1.39, 28), (1.40, 29), (1.405, 30),
     (1.407, 31), (1.41, 32), (1.415, 33), (1.42, 34), (1.43, 35),
     (1.432, 36), (1.434, 37), (1.436, 38), (1.438, 39), (1.44, 40),
-    (1.442, 41), (1.444, 42), (1.446, 43), (1.448, 44), (1.45, 45),
-    (1.45, 0),(1.45,1),(1.45,2),(1.45,3),(1.45,4),(1.45,5),(1.45,6),(1.45,7),(1.45,8),(1.45,9),(1.45,10),
-    (1.45, 11),(1.45,12),(1.45,13),(1.45,14),(1.45,15),(1.45,16),(1.45,17),(1.45,18),(1.45,19),(1.45,20),
-    (1.45, 21),(1.45,22),(1.45,23),(1.45,24),(1.45,25),(1.45,26),(1.45,27),(1.45,28),(1.45,29),(1.45,30),
-    (1.45, 31),(1.45,32),(1.45,33),(1.45,34),(1.45,35),
-    (1.0, 0), (1.04, 0), (1.06, 0), (1.08, 0), (1.1, 0),
-    (1.11, 0), (1.14, 0), (1.16, 0), (1.17, 0), (1.18, 0),
-    (1.197, 0), (1.225, 0), (1.235, 0), (1.245, 0), (1.258, 0),
-    (1.27, 0), (1.28, 0), (1.29, 0), (1.3, 0), (1.31, 0),
-    (1.32, 0), (1.33, 0), (1.34, 0), (1.35, 0), (1.36, 0),
-    (1.37, 0), (1.38, 0), (1.39, 0), (1.40, 0), (1.405, 0),
-    (1.407, 0), (1.41, 0), (1.415, 0), (1.42, 0), (1.43, 0),
-    (1.432, 0), (1.434, 0), (1.436, 0), (1.438, 0), (1.44, 0),
-    (1.442, 0), (1.444, 0), (1.446, 0), (1.448, 0), (1.45, 0)
-
+    (1.442, 41), (1.444, 42), (1.446, 43), (1.448, 44), (1.45, 45)
 ]
 
 # Define the unit square
@@ -82,6 +67,9 @@ unit_square = create_square(size=1)
 
 # Define the blue square (initial square)
 initial_blue_square = create_square(size=1)
+
+# Desired number of points inside the unit square
+n = 33  # You can adjust this to whatever you want
 
 
 # Function to check how many points are inside the unit square
@@ -104,16 +92,13 @@ def find_and_plot_all_combinations(n):
     # Initialize the perfect square n (start with the smallest perfect square)
     perfect_square_n = round_to_perfect_square(n)
 
-    # Maximum limit for perfect square search
-    max_search_limit = 10 * n  # Stop when the square exceeds 10 times n
-
     # Create a figure for the plots
-    fig, ax = plt.subplots(figsize=(6, 6))  # Smaller plot size
+    fig, ax = plt.subplots(figsize=(8, 8))
 
     ax.plot(unit_square[:, 0], unit_square[:, 1], 'r-', label='Unit Square', linewidth=2)
 
     # Iterate over each perfect square and all transformations
-    while perfect_square_n <= max_search_limit:
+    while True:
         print(f"Cartesian Size: {perfect_square_n}")
 
         # For each transformation, apply it and plot the result only if condition is met
@@ -127,57 +112,32 @@ def find_and_plot_all_combinations(n):
 
             # If exactly `n` points are inside, plot the results
             if inside_count == n:
-                print(
-                    f"\n** FOUND DESIRED N = {n} for Scaling Factor: {scale_factor:.2f} and Rotation Degree: {rotation_degree} **")
+                print(f"\n** FOUND DESIRED N = {n} for SF: {scale_factor:.2f} and RD: {rotation_degree} **")
 
-                return scale_factor, rotation_degree, fig, ax, transformed_grid_points
+                # Rotate and scale the blue square
+                rotated_blue_square = rotate_square(initial_blue_square, angle=rotation_degree)
+                scaled_rotated_blue_square = scale_square(rotated_blue_square, scale_factor)
+
+                # Plot the blue square and the grid points for the current transformation
+                ax.plot(scaled_rotated_blue_square[:, 0], scaled_rotated_blue_square[:, 1], 'b-',
+                        label=f'SF: {scale_factor:.2f}, RD: {rotation_degree}', alpha=0.5)
+                ax.scatter(transformed_grid_points[:, 0], transformed_grid_points[:, 1], color='g', s=10, alpha=0.5)
+
+                # Exit after plotting the successful transformation
+                plt.xlim(-2, 2)
+                plt.ylim(-2, 2)
+                plt.axhline(0, color='black', linewidth=0.5)
+                plt.axvline(0, color='black', linewidth=0.5)
+                plt.gca().set_aspect('equal', adjustable='box')
+                plt.title('Transformation of Blue Square with Grid Points')
+                plt.show()
+                return
 
         # After going through all transforms, move to the next perfect square if the points inside are less than `n`
         sqrt_perfect_square_n = int(np.sqrt(perfect_square_n)) + 1
         perfect_square_n = sqrt_perfect_square_n * sqrt_perfect_square_n
         print(f"Increasing Cartesian Size to: {perfect_square_n}")
 
-    return None, None, None, None, None  # No solution found
 
-
-# Streamlit UI elements for input
-st.title("Distribution N points inside Unit Square in Cartesian coordination system")
-
-# Create two columns: one for the input and one for the plot
-col1, col2 = st.columns(
-    [1, 2])  # Create a 2-column layout with column 1 smaller (for the input) and column 2 larger (for the plot)
-
-# Add the input field to the first column
-with col1:
-    n = st.number_input("Enter N", min_value=1, step=1)
-
-# If a number is entered, find and plot the combination
-if n:
-    # Show the result message in the first column
-    scale_factor, rotation_degree, fig, ax, transformed_grid_points = find_and_plot_all_combinations(n)
-
-    if scale_factor is not None:
-        # Show the success message in the first column
-        with col1:
-            st.markdown(
-                f"<h2 style='text-align: left; color: green;font-size: 20px;'>N = {n} <br>  Scaling Factor: {scale_factor:.2f} <br>  Rotation Degree: {rotation_degree}</h2>",
-                unsafe_allow_html=True)
-    else:
-        # Show the no solution message in the first column
-        with col1:
-            st.markdown(
-                f"<h2 style='text-align: left; color: red;font-size: 20px;'> No solution found for N = {n}. </h2>",
-                unsafe_allow_html=True)
-
-    # Plot the results in the second column
-    with col2:
-        if fig and ax:
-            ax.scatter(transformed_grid_points[:, 0], transformed_grid_points[:, 1], color='g', s=10, alpha=0.5)
-            # Adjust plot settings
-            plt.xlim(-1, 1)
-            plt.ylim(-1, 1)
-            plt.axhline(0, color='black', linewidth=0.5)
-            plt.axvline(0, color='black', linewidth=0.5)
-            plt.gca().set_aspect('equal', adjustable='box')
-            plt.title('Distribution points in Unit Square')
-            st.pyplot(fig)
+# Find and plot all transformations for each perfect square until the desired points are found
+find_and_plot_all_combinations(n)
