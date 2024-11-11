@@ -69,7 +69,7 @@ unit_square = create_square(size=1)
 initial_blue_square = create_square(size=1)
 
 # Desired number of points inside the unit square
-n = 33  # You can adjust this to whatever you want
+n = 46  # You can adjust this to whatever you want
 
 
 # Function to check how many points are inside the unit square
@@ -91,6 +91,7 @@ def check_if_n_points_inside_unit_square(scale_factor, rotation_degree, perfect_
 def find_and_plot_all_combinations(n):
     # Initialize the perfect square n (start with the smallest perfect square)
     perfect_square_n = round_to_perfect_square(n)
+    max_search_limit = 10 * n  # Stop when the square exceeds 10 times n
 
     # Create a figure for the plots
     fig, ax = plt.subplots(figsize=(8, 8))
@@ -98,7 +99,7 @@ def find_and_plot_all_combinations(n):
     ax.plot(unit_square[:, 0], unit_square[:, 1], 'r-', label='Unit Square', linewidth=2)
 
     # Iterate over each perfect square and all transformations
-    while True:
+    while perfect_square_n <= max_search_limit:
         print(f"Cartesian Size: {perfect_square_n}")
 
         # For each transformation, apply it and plot the result only if condition is met
@@ -110,7 +111,7 @@ def find_and_plot_all_combinations(n):
             # Print details for each transformation on one line
             print(f"SF: {scale_factor:.2f}, RD: {rotation_degree}, Inside Points: {inside_count}")
 
-            # If exactly `n` points are inside, plot the results
+            # If exactly n points are inside, plot the results
             if inside_count == n:
                 print(f"\n** FOUND DESIRED N = {n} for SF: {scale_factor:.2f} and RD: {rotation_degree} **")
 
@@ -129,15 +130,14 @@ def find_and_plot_all_combinations(n):
                 plt.axhline(0, color='black', linewidth=0.5)
                 plt.axvline(0, color='black', linewidth=0.5)
                 plt.gca().set_aspect('equal', adjustable='box')
-                plt.title('Transformation of Blue Square with Grid Points')
+                plt.title('Distribution 33 points inside Unit Square')
                 plt.show()
                 return
 
-        # After going through all transforms, move to the next perfect square if the points inside are less than `n`
+        # After going through all transforms, move to the next perfect square if the points inside are less than n
         sqrt_perfect_square_n = int(np.sqrt(perfect_square_n)) + 1
         perfect_square_n = sqrt_perfect_square_n * sqrt_perfect_square_n
         print(f"Increasing Cartesian Size to: {perfect_square_n}")
-
 
 # Find and plot all transformations for each perfect square until the desired points are found
 find_and_plot_all_combinations(n)
