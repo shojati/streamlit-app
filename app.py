@@ -1,7 +1,28 @@
 import numpy as np
+import plotly.express as px
 import matplotlib.pyplot as plt
 import streamlit as st
 
+# Custom CSS for background color and space between elements
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #d3d3d3 !important;  /* Force background color to light gray (grau) */
+    }
+    .stButton>button {
+        margin-top: 20px;  /* Adds space above buttons */
+        margin-bottom: 20px;  /* Adds space below buttons */
+    }
+    .stSlider>div>div>div>input {
+        margin-top: 20px;  /* Adds space above slider */
+    }
+    </style>
+    """, unsafe_allow_html=True
+)
+
+
+# Layout: Split the page into 2 rows
 # Function to create the square's vertices
 def create_square(size=1):
     half_size = size / 2
@@ -45,30 +66,28 @@ def round_to_perfect_square(n):
 # List of transformations including x and y translations
 transforms = [
     # Example with translations added
-    (1.55, 30, 0.1, -0.04),
-    (1.58, 25, 0.15, -0.06),
-    (1.55, 20, 0.15, -0.08),
-    (1.5, 15, 0.15, -0.9),
-    (1.35, 10, 0.1, -0.08),
     (1.1, 5, 0, 0),
     (1.14, 5, 0.03, -0.02),
     (1.19, 5, 0.05, -0.04),
     (1.25, 5, 0.08, -0.07),
-    (1.32, 5, 0.12, -0.1),
-    (1.32, 5, -0.1, 0.09),
+    (1.32, 5, 0.12, -0.11),
+    (1.32, 5, -0.01, 0.11),
     (1.25, 5, -0.07, 0.06),
-    (1.19, 5, -0.04, 0.03),
-    (1.14, 5, -0.02, 0.1),
+    (1.19, 5, -0.04, 0.04),
+    (1.14, 5, -0.02, 0.02),
     (1.18, 10, 0, 0),
+    (1.17, 10, 0, 0),
     (1.22, 10, 0.03, -0.02),
     (1.27, 10, 0.05, -0.04),
     (1.33, 10, 0.08, -0.07),
     (1.39, 10, 0.12, -0.09),
+    (1.35, 10, 0.1, -0.08),
     (1.36, 10, -0.09, 0.06),
     (1.32, 10, -0.07, 0.05),
     (1.27, 10, -0.04, 0.03),
-    (1.22, 10, -0.02, 0.1),
+    (1.22, 10, -0.02, 0.02),
     (1.25, 15, 0, 0),
+    (1.24, 15, 0, 0),
     (1.28, 15, 0.03, -0.02),
     (1.32, 15, 0.05, -0.03),
     (1.37, 15, 0.08, -0.05),
@@ -76,7 +95,8 @@ transforms = [
     (1.41, 15, -0.09, 0.06),
     (1.38, 15, -0.07, 0.05),
     (1.33, 15, -0.04, 0.02),
-    (1.29, 15, -0.02, 0.1),
+    (1.29, 15, -0.02, 0.01),
+    (1.27, 15, -0.02, 0.01),
     (1.31, 20, 0, 0),
     (1.33, 20, 0.03, -0.01),
     (1.36, 20, 0.05, -0.02),
@@ -85,17 +105,20 @@ transforms = [
     (1.45, 20, -0.09, 0.04),
     (1.42, 20, -0.07, 0.03),
     (1.38, 20, -0.04, 0.02),
-    (1.34, 20, -0.02, 0.1),
+    (1.34, 20, -0.02, 0.01),
     (1.345, 25, 0, 0),
     (1.39, 25, 0.03, -0.01),
     (1.41, 25, 0.05, -0.02),
     (1.46, 25, 0.08, -0.04),
     (1.52, 25, 0.12, -0.05),
+    (1.58, 25, 0.15, -0.06),
     (1.49, 25, -0.09, 0.04),
     (1.47, 25, -0.07, 0.03),
     (1.42, 25, -0.04, 0.02),
-    (1.39, 25, -0.02, 0.1),
+    (1.39, 25, -0.02, 0.01),
+    (1.38, 25, -0.02, 0.01),
     (1.4, 30, 0, 0),
+    (1.38, 30, 0, 0),
     (1.42, 30, 0.03, -0.01),
     (1.44, 30, 0.05, -0.02),
     (1.49, 30, 0.08, -0.04),
@@ -103,7 +126,7 @@ transforms = [
     (1.54, 30, -0.09, 0.04),
     (1.51, 30, -0.07, 0.03),
     (1.47, 30, -0.04, 0.02),
-    (1.44, 30, -0.02, 0.1),
+    (1.44, 30, -0.02, 0.01),
     (1.42, 35, 0, 0),
     (1.45, 35, 0.03, -0.01),
     (1.48, 35, 0.05, -0.02),
@@ -158,6 +181,7 @@ def check_if_n_points_inside_unit_square(scale_factor, rotation_degree, x_transl
 def find_and_plot_all_combinations(n):
     perfect_square_n = round_to_perfect_square(n)
     max_search_limit = 10 * n
+    step_count = 0  # Counter for the number of transformations
 
     fig, ax = plt.subplots(figsize=(6, 6))
 
@@ -167,49 +191,129 @@ def find_and_plot_all_combinations(n):
         print(f"Cartesian Size: {perfect_square_n}")
 
         for scale_factor, rotation_degree, x_translation, y_translation in transforms:
+            # Increment step count
+            step_count += 1
+
+            # Process the transformation
             inside_count, transformed_grid_points = check_if_n_points_inside_unit_square(
                 scale_factor, rotation_degree, x_translation, y_translation, perfect_square_n
             )
 
-            print(f"SF: {scale_factor:.2f}, RD: {rotation_degree}, X: {x_translation}, Y: {y_translation}, Inside Points: {inside_count}")
+            print(f"Step {step_count}: SF: {scale_factor:.2f}, RD: {rotation_degree}, "
+                  f"X: {x_translation}, Y: {y_translation}, Inside Points: {inside_count}, P_N: {perfect_square_n}")
 
             if inside_count == n:
-                print(f"\n** FOUND DESIRED N = {n} for SF: {scale_factor:.2f}, RD: {rotation_degree}, X: {x_translation}, Y: {y_translation} **")
-                return scale_factor, rotation_degree, x_translation, y_translation, fig, ax, transformed_grid_points
+                print(f"\n** FOUND DESIRED N = {n} in {step_count} steps. "
+                      f"SF: {scale_factor:.2f}, RD: {rotation_degree}, "
+                      f"X: {x_translation}, Y: {y_translation} **")
+                return scale_factor, rotation_degree, x_translation, y_translation, fig, ax, transformed_grid_points, perfect_square_n, step_count
 
+            # Increase grid size to the next perfect square
         sqrt_perfect_square_n = int(np.sqrt(perfect_square_n)) + 1
         perfect_square_n = sqrt_perfect_square_n * sqrt_perfect_square_n
         print(f"Increasing Cartesian Size to: {perfect_square_n}")
 
-    return None, None, None, None, None, None, None
+    return None, None, None, None, None, None, None, None, step_count
+
 
 # Streamlit UI elements for input
 st.title("Distribution of N Points inside Unit Square")
 
 col1, col2 = st.columns([1, 2])
 
-with col1:
-    n = st.number_input("Enter N", min_value=1, step=1)
+# Streamlit UI elements for input and output in the sidebar
+#st.title("Distribution of N Points inside Unit Square")
+
+# Sidebar for input parameters
+st.sidebar.header("Input Parameters")
+n = st.sidebar.number_input("Enter the value of N:", min_value=1, max_value=5000, value=1, step=1)
+
+# Initialize placeholders for results
+result_text = ""
+transformation_info = ""
 
 if n:
-    scale_factor, rotation_degree, x_translation, y_translation, fig, ax, transformed_grid_points = find_and_plot_all_combinations(n)
+    scale_factor, rotation_degree, x_translation, y_translation, fig, ax, transformed_grid_points,perfect_square_n, step_count = find_and_plot_all_combinations(n)
 
     if scale_factor is not None:
-        with col1:
-            st.markdown(
-                f"<h2 style='text-align: left; color: green;font-size: 20px;'>N = {n} <br> SF: {scale_factor:.2f} <br> RD: {rotation_degree}<br> X: {x_translation} <br> Y: {y_translation}</h2>",
-                unsafe_allow_html=True)
+        # Format the transformation result
+        # Format the transformation result with HTML for better styling
+        transformation_info = f"""
+            <h2 style='text-align: left; color: green; font-size: 20px;'>
+                Transformation Result for N = {n}
+            </h2>
+            <ul style='list-style-type: none; padding: 0;'>
+                <li style='font-size: 16px;'><strong>Scaling Factor :</strong> {scale_factor:.2f}</li>
+                <li style='font-size: 16px;'><strong>Rotation Degree :</strong> {rotation_degree}°</li>
+                <li style='font-size: 16px;'><strong>Translation_X:</strong> {x_translation}</li>
+                <li style='font-size: 16px;'><strong>Translation_Y:</strong> {y_translation}</li>
+                <li style='font-size: 16px;'><strong>Cartesian grid Size:</strong> {perfect_square_n}</li>
+                <li style='font-size: 16px;'><strong>Total Steps/Transformations:</strong> {step_count}</li>
+            </ul>
+        """
+
     else:
-        with col1:
-            st.markdown(f"<h2 style='text-align: left; color: red;font-size: 20px;'> No solution found for N = {n}. </h2>", unsafe_allow_html=True)
+        result_text = f"No solution found for N = {n}."
+
+    # Show results in the sidebar
+    with st.sidebar:
+        if transformation_info:
+            st.markdown(f"<h2 style='text-align: left; color: green;font-size: 20px;'>{transformation_info}</h2>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<h2 style='text-align: left; color: red;font-size: 20px;'>{result_text}</h2>", unsafe_allow_html=True)
+
+    # Main plot display
+    with st.columns([1, 2])[1]:
+        if fig and ax:
+            # Plot the transformed grid points
+            ax.scatter(transformed_grid_points[:, 0], transformed_grid_points[:, 1], color='b', s=10, alpha=0.5)
+
+            # Show only the unit square, which lies between -0.5 and 0.5 on both axes
+            ax.set_xlim(-0.5, 0.5)
+            ax.set_ylim(-0.5, 0.5)
+
+            # Optionally, remove the axis lines outside the square (set equal aspect ratio)
+            ax.axhline(0, color='black', linewidth=0.5)
+            ax.axvline(0, color='black', linewidth=0.5)
+
+            # Make sure the plot remains square (equal aspect ratio)
+            ax.set_aspect('equal', adjustable='box')
+
+            # Optionally add title for context
+            ax.set_title(f'Distribution of {n} Points in Unit Square', fontsize=14, style='italic')
+
+            # Display the plot in Streamlit
+            st.pyplot(fig)
 
     with col2:
         if fig and ax:
-            ax.scatter(transformed_grid_points[:, 0], transformed_grid_points[:, 1], color='g', s=10, alpha=0.5)
+            ax.scatter(transformed_grid_points[:, 0], transformed_grid_points[:, 1], color='b', s=10, alpha=0.5)
             plt.xlim(-1, 1)
             plt.ylim(-1, 1)
             plt.axhline(0, color='black', linewidth=0.5)
             plt.axvline(0, color='black', linewidth=0.5)
             plt.gca().set_aspect('equal', adjustable='box')
-            plt.title('Distribution of Points in Unit Square')
+            plt.title(f'Cartesian grid space in background of Unit Square', fontsize=14, style='italic')
             st.pyplot(fig)
+
+
+# Second Row (Split into 2 columns)
+col3, col4 = st.columns([1, 1])
+
+x = np.random.rand(n)
+y = np.random.rand(n)
+with col3:
+    # Untransformed Points Table
+    st.subheader("Untransformed Points")
+    untransformed_data = {
+        "X": np.random.rand(n),
+        "Y": np.random.rand(n)
+    }
+    st.table(untransformed_data)
+
+with col4:
+    # 3D Plot of Transformation (simplified version)
+    st.subheader("3D Plot of Points (Rotation & Scaling)")
+    fig2 = px.scatter_3d(x=x, y=y, z=np.random.rand(n), color=np.random.rand(n),
+                         title="3D Scatter of Transformed Points")
+    st.plotly_chart(fig2)
