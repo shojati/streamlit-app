@@ -67,6 +67,7 @@ def round_to_perfect_square(n):
 transforms = [
     # Example with translations added
     (1.1, 5, 0, 0),
+    (1.05, 2, 0, 0),
     (1.14, 5, 0.03, -0.02),
     (1.19, 5, 0.05, -0.04),
     (1.25, 5, 0.08, -0.07),
