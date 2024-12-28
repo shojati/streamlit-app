@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
 import streamlit as st
-
+import pandas as pd
 
 
 # Custom CSS for background color and space between elements
@@ -24,7 +24,8 @@ st.markdown(
     """, unsafe_allow_html=True
 )
 
-
+import pandas as pd
+import plotly.express as px
 # Layout: Split the page into 2 rows
 # Function to create the square's vertices
 def create_square(size=1):
