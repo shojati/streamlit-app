@@ -1,7 +1,10 @@
 import numpy as np
+import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
 import streamlit as st
+
+
 
 # Custom CSS for background color and space between elements
 st.markdown(
@@ -300,7 +303,7 @@ def find_and_plot_all_combinations(n):
 # Streamlit UI elements for input
 st.title("Distribution of N Points inside Unit Square")
 
-col1, col2 = st.columns([1, 2])
+col1, col2 = st.columns([1, 1])
 
 # Streamlit UI elements for input and output in the sidebar
 #st.title("Distribution of N Points inside Unit Square")
@@ -329,7 +332,6 @@ if n:
                 <li style='font-size: 16px;'><strong>Translation_X:</strong> {x_translation}</li>
                 <li style='font-size: 16px;'><strong>Translation_Y:</strong> {y_translation}</li>
                 <li style='font-size: 16px;'><strong>Cartesian grid Size:</strong> {perfect_square_n}</li>
-                <li style='font-size: 16px;'><strong>Total Steps/Transformations:</strong> {step_count}</li>
             </ul>
         """
 
@@ -344,7 +346,7 @@ if n:
             st.markdown(f"<h2 style='text-align: left; color: red;font-size: 20px;'>{result_text}</h2>", unsafe_allow_html=True)
 
     # Main plot display
-    with st.columns([1, 2])[1]:
+    with col1:
         if fig and ax:
             # Plot the transformed grid points
             ax.scatter(transformed_grid_points[:, 0], transformed_grid_points[:, 1], color='b', s=10, alpha=0.5)
@@ -383,18 +385,45 @@ col3, col4 = st.columns([1, 1])
 
 x = np.random.rand(n)
 y = np.random.rand(n)
-with col3:
-    # Untransformed Points Table
-    st.subheader("Untransformed Points")
-    untransformed_data = {
-        "X": np.random.rand(n),
-        "Y": np.random.rand(n)
-    }
-    st.table(untransformed_data)
+with st.columns([1, 20])[1]:
+    import pandas as pd
 
-with col4:
-    # 3D Plot of Transformation (simplified version)
-    st.subheader("3D Plot of Points (Rotation & Scaling)")
-    fig2 = px.scatter_3d(x=x, y=y, z=np.random.rand(n), color=np.random.rand(n),
-                         title="3D Scatter of Transformed Points")
-    st.plotly_chart(fig2)
+    # Path to the static file
+    file_path = "C:/Users/Admin/PycharmProjects/bruteForce/transformations_new_results.xlsx"
+    # Load the Excel file
+    df = pd.read_excel(file_path)
+
+
+
+    # Dynamically filter column B (Inside Points) based on N
+    if "Inside Points" in df.columns:
+        filtered_df = df[df["Inside Points"] == n]
+    else:
+        st.warning("The column 'Inside Points' does not exist in the uploaded Excel file.")
+        filtered_df = df
+
+    # Sidebar dropdown filters for additional columns
+    st.sidebar.header("Additional Filters")
+
+    for column in ["n^2 (Total Points)", "Scaling Factor", "Rotation Degree", "Translation X", "Translation Y"]:
+        if column in df.columns:
+            unique_values = sorted(df[column].unique())  # Get sorted unique values
+
+            if pd.api.types.is_numeric_dtype(df[column]):
+                # Numeric dropdown box for selection
+                selected_value = st.sidebar.selectbox(
+                    f"Select value for {column}", options=["All"] + list(unique_values)
+                )
+                if selected_value != "All":
+                    filtered_df = filtered_df[filtered_df[column] == selected_value]
+            else:
+                # Categorical dropdown for selection
+                selected_value = st.sidebar.selectbox(
+                    f"Select value for {column}", options=["All"] + list(unique_values)
+                )
+                if selected_value != "All":
+                    filtered_df = filtered_df[filtered_df[column] == selected_value]
+
+    # Display only the final filtered data
+    st.write("Filtered Data After Applying All Filters:")
+    st.dataframe(filtered_df)
