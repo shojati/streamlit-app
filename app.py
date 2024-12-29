@@ -392,7 +392,7 @@ with st.columns([1, 20])[1]:
     #file_path = "C:/Users/Admin/PycharmProjects/bruteForce/transformations_new_results.xlsx"
 
     # Assuming the file is in a 'data' folder
-    file_path = os.path.join(os.path.dirname(__file__), "C:\Users\Admin\PycharmProjects\bruteForce\data", "transformations_new_results.xlsx")
+    file_path = os.path.join(os.path.dirname(__file__), r"C:/Users/Admin/PycharmProjects/bruteForce/data", "transformations_new_results.xlsx")
 
     if not os.path.exists(file_path):
         st.error(f"File not found: {file_path}. Please ensure the file is in the correct location.")
