@@ -390,6 +390,7 @@ with st.columns([1, 20])[1]:
 
     # Relative path to the file
     file_path = os.path.join(os.path.dirname(__file__), "data", "transformations_new_results.xlsx")
+    df = pd.read_excel(file_path)
 
     # Debugging: Output the path being used
     #st.write(f"Looking for file at: {file_path}")
