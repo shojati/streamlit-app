@@ -392,14 +392,8 @@ with st.columns([1, 20])[1]:
     file_path = os.path.join(os.path.dirname(__file__), "data", "transformations_new_results.xlsx")
 
     # Debugging: Output the path being used
-    st.write(f"Looking for file at: {file_path}")
+    #st.write(f"Looking for file at: {file_path}")
 
-    try:
-        df = pd.read_excel(file_path)
-        st.write("Data Loaded Successfully")
-        st.dataframe(df)
-    except FileNotFoundError:
-        st.error(f"File not found: {file_path}. Please ensure the file is in the correct location.")
 
     # Dynamically filter column B (Inside Points) based on N
     if "Inside Points" in df.columns:
