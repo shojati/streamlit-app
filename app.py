@@ -384,17 +384,16 @@ if n:
 # Second Row (Split into 2 columns)
 col3, col4 = st.columns([1, 1])
 
-x = np.random.rand(n)
-y = np.random.rand(n)
 with st.columns([1, 20])[1]:
     import pandas as pd
+    import os
 
     # Path to the static file
-    file_path = "C:/Users/Admin/PycharmProjects/bruteForce/transformations_new_results.xlsx"
-    # Load the Excel file
+    #file_path = "C:/Users/Admin/PycharmProjects/bruteForce/transformations_new_results.xlsx"
+
+    # Assuming the file is in a 'data' folder
+    file_path = os.path.join(os.path.dirname(__file__), "C:/Users/Admin/PycharmProjects/bruteForce", "transformations_new_results.xlsx")
     df = pd.read_excel(file_path)
-
-
 
     # Dynamically filter column B (Inside Points) based on N
     if "Inside Points" in df.columns:
