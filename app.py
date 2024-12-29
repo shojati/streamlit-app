@@ -392,7 +392,7 @@ with st.columns([1, 20])[1]:
     #file_path = "C:/Users/Admin/PycharmProjects/bruteForce/transformations_new_results.xlsx"
 
     # Assuming the file is in a 'data' folder
-    file_path = os.path.join(os.path.dirname(__file__), "C:/Users/Admin/PycharmProjects/bruteForce", "transformations_new_results.xlsx")
+    file_path = os.path.join(os.path.dirname(__file__), "C:/Users/Admin/.streamlit/", "transformations_new_results.xlsx")
     df = pd.read_excel(file_path)
 
     # Dynamically filter column B (Inside Points) based on N
