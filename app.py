@@ -418,7 +418,7 @@ with st.columns([1, 20])[1]:
     #filtered_df = filtered_df.reset_index(drop=True)  # Remove the index
     #st.write(filtered_df.to_html(index=False), unsafe_allow_html=True)
 
-    #st.write(f'Additional transformations that give same {n} inside the Unit Square:')
+    st.write(f'Additional transformations that give same {n} inside the Unit Square:')
     st.dataframe(filtered_df.reset_index(drop=True))  # Reset index before displaying
 
 
