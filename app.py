@@ -390,7 +390,8 @@ with st.columns([1, 20])[1]:
 
     # Relative path to the file
     file_path = os.path.join(os.path.dirname(__file__), "data", "transformations_new_results.xlsx")
-    df = pd.read_excel(file_path)
+    df = pd.read_excel(file_path, index_col=None)
+
 
     # Debugging: Output the path being used
     #st.write(f"Looking for file at: {file_path}")
@@ -407,4 +408,7 @@ with st.columns([1, 20])[1]:
 
     # Display only the final filtered data
     st.write("Additional transformations that give same {n} inside the Unit Square:")
-    st.dataframe(filtered_df.reset_index(drop=True))
+    st.table(filtered_df.style.hide(axis='index'))
+
+
+
