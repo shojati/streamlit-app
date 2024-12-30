@@ -407,7 +407,7 @@ with st.columns([1, 20])[1]:
 
 
     # Display only the final filtered data
-    st.write("Additional transformations that give same {n} inside the Unit Square:")
+    st.write(f'Additional transformations that give same {n} inside the Unit Square:')
     st.table(filtered_df.style.hide(axis='index'))
 
 
