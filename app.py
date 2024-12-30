@@ -403,27 +403,7 @@ with st.columns([1, 20])[1]:
         st.warning("The column 'Inside Points' does not exist in the uploaded Excel file.")
         filtered_df = df
 
-    # Sidebar dropdown filters for additional columns
-    st.sidebar.header("Additional Filters")
 
-    for column in ["n^2 (Total Points)", "Scaling Factor", "Rotation Degree", "Translation X", "Translation Y"]:
-        if column in df.columns:
-            unique_values = sorted(df[column].unique())  # Get sorted unique values
-
-            if pd.api.types.is_numeric_dtype(df[column]):
-                # Numeric dropdown box for selection
-                selected_value = st.sidebar.selectbox(
-                    f"Select value for {column}", options=["All"] + list(unique_values)
-                )
-                if selected_value != "All":
-                    filtered_df = filtered_df[filtered_df[column] == selected_value]
-            else:
-                # Categorical dropdown for selection
-                selected_value = st.sidebar.selectbox(
-                    f"Select value for {column}", options=["All"] + list(unique_values)
-                )
-                if selected_value != "All":
-                    filtered_df = filtered_df[filtered_df[column] == selected_value]
 
     # Display only the final filtered data
     st.write("Filtered Data After Applying All Filters:")
