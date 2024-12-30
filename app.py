@@ -406,5 +406,5 @@ with st.columns([1, 20])[1]:
 
 
     # Display only the final filtered data
-    st.write("Filtered Data After Applying All Filters:")
+    st.write("Additional transformations that give same {n} inside the Unit Square:")
     st.dataframe(filtered_df)
