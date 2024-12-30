@@ -390,12 +390,8 @@ with st.columns([1, 20])[1]:
 
     # Relative path to the file
     file_path = os.path.join(os.path.dirname(__file__), "data", "transformations_new_results.xlsx")
+    #file_path = "data/transformations_new_results.xlsx"
     df = pd.read_excel(file_path, index_col=None)
-
-
-    # Debugging: Output the path being used
-    #st.write(f"Looking for file at: {file_path}")
-
 
     # Dynamically filter column B (Inside Points) based on N
     if "Inside Points" in df.columns:
@@ -404,11 +400,26 @@ with st.columns([1, 20])[1]:
         st.warning("The column 'Inside Points' does not exist in the uploaded Excel file.")
         filtered_df = df
 
+    # Define the column to hide
+    column_to_hide = "Inside Points"
 
+    # Check if the column exists in the DataFrame
+    if column_to_hide in filtered_df.columns:
+        # Create a new DataFrame without the column
+        filtered_df_to_display = filtered_df.drop(columns=[column_to_hide])
+    else:
+        # If the column doesn't exist, use the original DataFrame
+        filtered_df_to_display = filtered_df
+
+    # Display the table without the hidden column
+    st.write(filtered_df_to_display.to_html(index=False), unsafe_allow_html=True)
 
     # Display only the final filtered data
+    filtered_df = filtered_df.reset_index(drop=True)  # Remove the index
+    st.write(filtered_df.to_html(index=False), unsafe_allow_html=True)
+
     st.write(f'Additional transformations that give same {n} inside the Unit Square:')
-    st.table(filtered_df.style.hide(axis='index'))
+    st.dataframe(filtered_df.reset_index(drop=True))  # Reset index before displaying
 
 
 
