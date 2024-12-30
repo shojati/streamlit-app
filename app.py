@@ -412,14 +412,14 @@ with st.columns([1, 20])[1]:
         filtered_df_to_display = filtered_df
 
     # Display the table without the hidden column
-    st.write(filtered_df_to_display.to_html(index=False), unsafe_allow_html=True)
+    st.write(f'Additional transformations that give same {n} inside the Unit Square:',filtered_df_to_display.to_html(index=False), unsafe_allow_html=True)
 
     # Display only the final filtered data
     #filtered_df = filtered_df.reset_index(drop=True)  # Remove the index
     #st.write(filtered_df.to_html(index=False), unsafe_allow_html=True)
 
-    st.write(f'Additional transformations that give same {n} inside the Unit Square:')
-    st.dataframe(filtered_df.reset_index(drop=True))  # Reset index before displaying
+    #st.write(f'Additional transformations that give same {n} inside the Unit Square:')
+    #st.dataframe(filtered_df.reset_index(drop=True))  # Reset index before displaying
 
 
 
