@@ -240,7 +240,8 @@ transforms = [
     (1.57, 45, -0.09, 0),
     (1.54, 45, -0.07, 0),
     (1.5, 45, -0.04, 0),
-    (1.47, 45, -0.02, 0.1)
+    (1.47, 45, -0.02, 0.1),
+(2.27, 7, 0.08, -0.07)
 ]
 
 # Define the unit square
@@ -378,8 +379,8 @@ if n:
     with col2:
         if fig and ax:
             ax.scatter(transformed_grid_points[:, 0], transformed_grid_points[:, 1], color='b', s=10, alpha=0.5)
-            plt.xlim(-1, 1)
-            plt.ylim(-1, 1)
+            plt.xlim(-1.5, 1.5)
+            plt.ylim(-1.5, 1.5)
             plt.axhline(0, color='black', linewidth=0.5)
             plt.axvline(0, color='black', linewidth=0.5)
             plt.gca().set_aspect('equal', adjustable='box')
