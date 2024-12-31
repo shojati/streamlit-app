@@ -417,5 +417,5 @@ with st.columns([1, 20])[1]:
         filtered_df_to_display = filtered_df
 
     # Display the table without the hidden column
-    st.write(f'Additional transformations that give same {n} inside the Unit Square:',
+    st.write(f'Additional transformations that give same inside the Unit Square:',
              filtered_df_to_display.to_html(index=False), unsafe_allow_html=True)
