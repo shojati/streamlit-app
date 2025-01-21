@@ -387,13 +387,13 @@ if n:
             plt.title(f'Cartesian grid space in background of Unit Square', fontsize=14, style='italic')
             st.pyplot(fig)
 
-
-# Second Row (Split into 2 columns)
-col3, col4 = st.columns([1, 1])
-
-with st.columns([1, 20])[1]:
+    # Second Row (Split into 2 columns)
+#col3, col4 = st.columns([1, 1])
     import pandas as pd
     import os
+    import plotly.express as px
+
+    col3, col4 = st.columns([1, 2])
 
     # Relative path to the file
     file_path = os.path.join(os.path.dirname(__file__), "data", "transformations_new_results.xlsx")
@@ -416,7 +416,34 @@ with st.columns([1, 20])[1]:
     else:
         # If the column doesn't exist, use the original DataFrame
         filtered_df_to_display = filtered_df
-
+    # Left column: Table display
     # Display the table without the hidden column
-    st.write(f'Additional transformations that give same {n} inside the Unit Square:',
-             filtered_df_to_display.to_html(index=False), unsafe_allow_html=True)
+
+    #with st.columns([1, 20])[1]:
+    #    st.write(f'Additional transformations that give same {n} inside the Unit Square:',
+        #         filtered_df_to_display.to_html(index=False), unsafe_allow_html=True)
+
+    # Right column: 4D scatterplot matrix visualization
+    with st.columns([1, 20])[1]:
+        columns_to_plot = ["Scaling Factor", "Rotation Degree", "Translation X", "Translation Y"]
+
+        # Check for missing columns
+        missing_columns = [col for col in columns_to_plot if col not in filtered_df.columns]
+        if missing_columns:
+            st.warning(f"Missing required columns for visualization: {', '.join(missing_columns)}")
+        else:
+            st.write("### 4D Scatterplot Matrix")
+
+            # Ensure the correct column name is used for coloring
+            color_column = "Scaling Factor" if "Scaling Factor" in filtered_df.columns else None
+
+            fig = px.scatter_matrix(
+                filtered_df,
+                dimensions=columns_to_plot,
+                color=color_column,  # Corrected column name
+                title=f"Transformations of {n} Scatterplot Matrix",
+                labels={col: col.replace(" ", " ") for col in columns_to_plot},  # Adjusted space handling
+                height=700,
+                width=900
+            )
+            st.plotly_chart(fig, use_container_width=True)
